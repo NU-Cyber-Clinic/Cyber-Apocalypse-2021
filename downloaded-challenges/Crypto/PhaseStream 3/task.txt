@@ -1,0 +1,2 @@
+The aliens have learned the stupidity of their misunderstanding of Kerckhoffs's principle. Now they're going to use a well-known stream cipher (AES in CTR mode) with a strong key. And they'll happily give us poor humans the source because they're so confident it's secure!
+This challenge will raise 33 euros for a good cause.
