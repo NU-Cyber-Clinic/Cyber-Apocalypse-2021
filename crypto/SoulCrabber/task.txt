@@ -1,2 +1,0 @@
-liens heard of this cool newer language called Rust, and hoped the safety it offers could be used to improve their stream cipher.
-This challenge will raise 33 euros for a good cause.
